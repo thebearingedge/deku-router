@@ -29,10 +29,16 @@ const About = {
     return { type, about }
   }
 }
-const Redirecting = {
-  render() { throw new Error('Redirecting component should not render') },
+const Redirects = {
+  render() { throw new Error('Redirects component should not render') },
   loadState({ redirectTo }) { return redirectTo('/page') }
 }
+
+const RedirectsAgain = {
+  render() { throw new Error('RedirectsAgain component should not render') },
+  loadState({ redirectTo }) { return redirectTo('/redirects') }
+}
+
 const LoopTo = {
   render() { throw new Error('LoopTo component should not render') },
   loadState({ redirectTo }) { return redirectTo('/loop-from') }
@@ -65,8 +71,9 @@ describe('createRouter(routes, history, store)', () => {
         <Index component={ Home }/>
         <Route path='page' component={ Page }>
           <Route path='about' component={ About }/>
+          <Route path='redirects-again' component={ RedirectsAgain }/>
         </Route>
-        <Route path='redirecting' component={ Redirecting }/>
+        <Route path='redirects' component={ Redirects }/>
         <Route path='loop-to' component={ LoopTo }/>
         <Route path='loop-from' component={ LoopFrom }/>
       </Route>
@@ -122,7 +129,7 @@ describe('createRouter(routes, history, store)', () => {
       done()
     })
 
-    Router.transitionTo('/redirecting').catch(done)
+    Router.transitionTo('/redirects').catch(done)
   })
 
   it('redirects to another route and replaces the navigation entry', done => {
@@ -135,7 +142,7 @@ describe('createRouter(routes, history, store)', () => {
       done()
     })
 
-    window.history.replaceState({}, null, '/redirecting')
+    window.history.replaceState({}, null, '/redirects')
     window.dispatchEvent({ type: 'popstate' })
   })
 
@@ -159,6 +166,19 @@ describe('createRouter(routes, history, store)', () => {
       .to.eventually.be.rejectedWith(
         Error, 'redirect loop detected: /loop-to -> /loop-from -> /loop-to'
       )
+  })
+
+  it('handles multiple redirects', done => {
+
+    store.subscribe(() => {
+      expect(node.textContent).to.equal('app page ')
+      expect(window.history.pushState).to.have.been.calledOnce
+      expect(window.history.pushState)
+        .to.have.been.calledWithExactly({}, null, '/page')
+      done()
+    })
+
+    Router.transitionTo('/page/redirects-again').catch(done)
   })
 
 })
