@@ -31,7 +31,15 @@ const About = {
 }
 const Redirecting = {
   render() { throw new Error('Redirecting component should not render') },
-  loadState(transition) { return transition.redirectTo('/page') }
+  loadState({ redirectTo }) { return redirectTo('/page') }
+}
+const LoopTo = {
+  render() { throw new Error('LoopTo component should not render') },
+  loadState({ redirectTo }) { return redirectTo('/loop-from') }
+}
+const LoopFrom = {
+  render() { throw new Error('LoopFrom component should not render') },
+  loadState({ redirectTo }) { return redirectTo('/loop-to') }
 }
 
 describe('createRouter(routes, history, store)', () => {
@@ -59,6 +67,8 @@ describe('createRouter(routes, history, store)', () => {
           <Route path='about' component={ About }/>
         </Route>
         <Route path='redirecting' component={ Redirecting }/>
+        <Route path='loop-to' component={ LoopTo }/>
+        <Route path='loop-from' component={ LoopFrom }/>
       </Route>
     )
 
@@ -141,6 +151,14 @@ describe('createRouter(routes, history, store)', () => {
     })
 
     Router.transitionTo('/page/about').catch(done)
+  })
+
+  it('throws when a redirect loop is detected', () => {
+
+    return expect(Router.transitionTo('/loop-to'))
+      .to.eventually.be.rejectedWith(
+        Error, 'redirect loop detected: /loop-to -> /loop-from -> /loop-to'
+      )
   })
 
 })
