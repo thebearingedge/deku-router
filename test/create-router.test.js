@@ -18,34 +18,54 @@ chai.use(sinonChai)
 
 const App = ({ children }) => <div>app { children }</div>
 const Home = ({ context }) => <div>home { context.location.url }</div>
-const Page = ({ children }) => <div>page { children }</div>
+const Page = ({ props, children }) =>
+  <div>page { children }{ props.Sidebar || null }{ props.Main || null }</div>
 const About = {
   render({ context }) {
     return <div>{ context.about }</div>
   },
-  loadState({ toState }) {
-    const type = 'LOAD_ABOUT'
-    const about = `you have loaded "About" at ${ toState.location.url }`
-    return { type, about }
+  loadState(transition, done) {
+    const { url } = transition.toState.location
+    const type = 'ABOUT_LOADED'
+    const about = `you have loaded "About" at ${url}`
+    done(null, { type, about })
+  }
+}
+const Sidebar = {
+  render({ context }) {
+    return <ul>{ context.sidebarItems.map(item => <li>{ item }</li>) }</ul>
+  },
+  loadState() {
+    const type = 'ITEMS_LOADED'
+    const items = ['foo', 'bar', 'baz']
+    return Promise.resolve({ type, items })
+  }
+}
+const Main = {
+  render({ context }) {
+    return <p>{ context.mainContent }</p>
+  },
+  loadState() {
+    const type = 'CONTENT_LOADED'
+    const content = 'lorem ipsum'
+    return Promise.resolve({ type, content })
   }
 }
 const Redirects = {
   render() { throw new Error('Redirects component should not render') },
-  loadState({ redirectTo }) { return redirectTo('/page') }
+  loadState(transition) { transition.redirectTo('/page') }
 }
-
 const RedirectsAgain = {
   render() { throw new Error('RedirectsAgain component should not render') },
-  loadState({ redirectTo }) { return redirectTo('/redirects') }
+  loadState({ redirectTo }) { redirectTo('/redirects') }
 }
-
 const LoopTo = {
   render() { throw new Error('LoopTo component should not render') },
-  loadState({ redirectTo }) { return redirectTo('/loop-from') }
+  loadState({ redirectTo }) { redirectTo('/loop-from') }
 }
 const LoopFrom = {
   render() { throw new Error('LoopFrom component should not render') },
-  loadState({ redirectTo }) { return redirectTo('/loop-to') }
+  loadState({ redirectTo }) { redirectTo('/loop-to') }
 }
 
 describe('createRouter(routes, history, store)', () => {
@@ -61,8 +81,17 @@ describe('createRouter(routes, history, store)', () => {
 
     const location = routeReducer(history)
     const about = (state = '', { type, about }) =>
-      type === 'LOAD_ABOUT' ? about : state
-    const reducers = enableBatching(combineReducers({ location, about }))
+      type === 'ABOUT_LOADED' ? about : state
+    const sidebarItems = (state = [], { type, items }) =>
+      type === 'ITEMS_LOADED' ? items : state
+    const mainContent = (state = '', { type, content }) =>
+      type === 'CONTENT_LOADED' ? content : state
+    const reducers = enableBatching(combineReducers({
+      location,
+      about,
+      sidebarItems,
+      mainContent
+    }))
 
     store = createStore(reducers)
 
@@ -71,6 +100,7 @@ describe('createRouter(routes, history, store)', () => {
         <Index component={ Home }/>
         <Route path='page' component={ Page }>
           <Route path='about' component={ About }/>
+          <Route path='master-detail' components={{ Sidebar, Main }}/>
           <Route path='redirects-again' component={ RedirectsAgain }/>
         </Route>
         <Route path='redirects' component={ Redirects }/>
@@ -179,6 +209,19 @@ describe('createRouter(routes, history, store)', () => {
     })
 
     Router.transitionTo('/page/redirects-again').catch(done)
+  })
+
+  it('loads state for sibling components', done => {
+
+    store.subscribe(() => {
+      expect(node.textContent).to.equal('app page foobarbazlorem ipsum')
+      expect(window.history.pushState).to.have.been.calledOnce
+      expect(window.history.pushState)
+        .to.have.been.calledWithExactly({}, null, '/page/master-detail')
+      done()
+    })
+
+    Router.transitionTo('/page/master-detail').catch(done)
   })
 
 })
