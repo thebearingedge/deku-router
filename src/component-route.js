@@ -1,8 +1,4 @@
 
-const Route = {
-  render() {
-    throw new Error('<Route/> should not be rendered')
-  }
-}
+const Route = {}
 
 export default Route

@@ -16,8 +16,6 @@ export default function createHistory(window, { useHash = false } = {}) {
 
   const listen = hook => {
 
-    if (listener) ignore()
-
     listener = () => hook(getLocation())
     watch()
   }
