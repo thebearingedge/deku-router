@@ -11,11 +11,12 @@ const createTransition = (fromState, location, context, redirects = []) =>
     const toState = matchLocation(routes, location)
     const { url } = toState.location
 
+
     if (redirects.includes(url)) {
 
       const loop = redirects.concat(url).join(' -> ')
 
-      throw new Error(`redirect loop detected: ${loop}`)
+      return reject(new Error(`redirect loop detected: ${loop}`))
     }
 
 
@@ -42,7 +43,6 @@ const createTransition = (fromState, location, context, redirects = []) =>
       components
         ? Object.keys(components).map(key => components[key].loadState)
         : component.loadState
-
     ))
 
 
