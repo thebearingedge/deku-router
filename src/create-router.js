@@ -8,13 +8,14 @@ import createRouteElement from './create-route-element'
 
 export default function createRouter(root, history, { getState, dispatch }) {
 
+  history.listen(location => transitionTo(location, { navigating: true }))
+
   const Router = {}
   const routes = createRoute()(root)
-  const location = getState().location || history.getLocation()
+  const location = getState().location
+
+
   const state = { ...matchLocation(routes, location), transition: null }
-
-
-  history.listen(location => transitionTo(location, { navigating: true }))
 
 
   const render = () => {
@@ -29,13 +30,12 @@ export default function createRouter(root, history, { getState, dispatch }) {
   const transitionTo = (location, { navigating = false } = {}) => {
 
     return createTransition(state, location, getState())
-      .then(({ toState, isCancelled, redirects, actions }) => {
-
-        if (isCancelled) return
+      .then(({ toState, redirects, actions }) => {
 
         Object.assign(state, toState, { transition: null })
 
-        const { url } = toState.location
+        const { location } = toState
+        const { url } = location
 
         if (navigating && redirects.length) {
 

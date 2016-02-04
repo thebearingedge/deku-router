@@ -3,8 +3,6 @@ import { parse, stringify } from 'query-string'
 
 export const extract = url => {
 
-  if (url && typeof url === 'object') return url
-
   if (typeof url !== 'string') return {}
 
   url = normalizeUrl(url)

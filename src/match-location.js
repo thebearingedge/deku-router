@@ -3,7 +3,7 @@ import { extract } from './utils-url'
 
 const matchLocation = (routes, location) => {
 
-  if (typeof location !== 'object') {
+  if (!(location instanceof Object)) {
 
     location = extract(location)
   }
@@ -53,12 +53,9 @@ const matchLocation = (routes, location) => {
 
       const params = matches.pop()
 
-      if (route.path) {
+      const path = route.toPath(params)
 
-        const path = route.toPath(params)
-
-        unmatched.unshift(path)
-      }
+      unmatched.unshift(path)
 
       route = route.parent
       children = route.children
