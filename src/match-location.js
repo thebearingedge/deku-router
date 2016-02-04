@@ -3,11 +3,7 @@ import { extract } from './utils-url'
 
 const matchLocation = (routes, location) => {
 
-  if (!(location instanceof Object)) {
-
-    location = extract(location)
-  }
-
+  location instanceof Object || (location = extract(location))
 
   let route = routes
 
@@ -74,7 +70,7 @@ const matchLocation = (routes, location) => {
 
   if (unmatched.length) return { route: null, params: null, location }
 
-  return { location, route, params: Object.assign(...matches) }
+  return { route, params: Object.assign(...matches), location }
 }
 
 export default matchLocation

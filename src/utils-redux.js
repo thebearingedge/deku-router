@@ -12,3 +12,6 @@ export const routeReducer = history =>
   (state = history.getLocation(), { type, payload }) =>
 
     type === ROUTE_CHANGE ? payload : state
+
+
+export default routeReducer

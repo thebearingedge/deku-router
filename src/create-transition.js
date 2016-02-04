@@ -26,24 +26,28 @@ const createTransition = (fromState, location, context, redirects = []) =>
       resolve(createTransition(fromState, location, context, redirects))
     }
 
+
     const transitioning = fromState.transition = {
       toState,
       redirects,
       get isCancelled() { return fromState.transition !== this }
     }
 
+
     const toBranch = [...toState.route.branch]
 
-    const stateHooks = compact(flatMap(toBranch, route => {
 
-      const { component, components } = route
+    const stateHooks = compact(flatMap(toBranch, ({ component, components }) =>
 
-      if (!components) return component.loadState
+      components
+        ? Object.keys(components).map(key => components[key].loadState)
+        : component.loadState
 
-      return Object.keys(components).map(key => components[key].loadState)
-    }))
+    ))
+
 
     const transition = { fromState, toState, context, redirectTo }
+
 
     Promise
       .all(stateHooks.map(hook => invokeAsync(hook, transition)))
