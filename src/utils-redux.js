@@ -1,5 +1,5 @@
 
-export const ROUTE_CHANGE = '@@router/ROUTE_CHANGE'
+export const ROUTE_CHANGE = '@@deku-router/ROUTE_CHANGE'
 
 
 export const routeChange = location =>

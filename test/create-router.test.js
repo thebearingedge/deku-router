@@ -13,7 +13,6 @@ import createHistory from '../src/create-history'
 import createRouter from '../src/create-router'
 import { routeChange, routeReducer } from '../src/utils-redux'
 
-
 chai.use(sinonChai)
 
 const App = ({ children }) => <div>app { children }</div>
@@ -33,7 +32,7 @@ const About = {
 }
 const Sidebar = {
   render({ context }) {
-    return <ul>{ context.sidebarItems.map(item => <li>{ item }</li>) }</ul>
+    return <ul>{ context.sidebarItems.map(item => <li>{ item } </li>) }</ul>
   },
   loadState() {
     const type = 'ITEMS_LOADED'
@@ -214,7 +213,7 @@ describe('createRouter(routes, history, store)', () => {
   it('loads state for sibling components', done => {
 
     store.subscribe(() => {
-      expect(node.textContent).to.equal('app page foobarbazlorem ipsum')
+      expect(node.textContent).to.equal('app page foo bar baz lorem ipsum')
       expect(window.history.pushState).to.have.been.calledOnce
       expect(window.history.pushState)
         .to.have.been.calledWithExactly({}, null, '/page/master-detail')
