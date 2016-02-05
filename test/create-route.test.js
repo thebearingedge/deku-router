@@ -1,12 +1,10 @@
 
 import { expect } from 'chai'
 import { h } from 'deku'
-import * as components from './fixtures/components'
+import { Parent, Child, Sibling, Grandchild } from './fixtures/components'
 import Route from '../src/component-route'
 import Index from '../src/component-index'
 import createRoute from '../src/create-route'
-
-const { Parent, Child, Sibling, Grandchild } = components
 
 describe('createRoute(parent = null)(<Route/>)', () => {
 

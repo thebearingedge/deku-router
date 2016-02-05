@@ -7,9 +7,9 @@ export const routeChange = location =>
   ({ type: ROUTE_CHANGE, payload: location })
 
 
-export const routeReducer = history =>
+export const routeReducer = ({ getLocation }) =>
 
-  (state = history.getLocation(), { type, payload }) =>
+  (state = getLocation(), { type, payload }) =>
 
     type === ROUTE_CHANGE ? payload : state
 
