@@ -21,7 +21,7 @@ const matchLocation = (routes, location) => {
 
     let params
 
-    children.sort((a, b) => a.specificity > b.specificity)
+    children.sort((a, b) => a.specificity < b.specificity)
 
     for (let i = 0; i < children.length; i++) {
 

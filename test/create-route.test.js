@@ -20,6 +20,27 @@ describe('createRoute(parent = null)(<Route/>)', () => {
     expect(parent).to.have.property('children').that.deep.equals([])
   })
 
+  it('throws if the root route is an Index route', () => {
+
+    const createIndex = () => createRoute()(<Index component={ Parent }/>)
+
+    expect(createIndex).to.throw(Error, '<Index/> routes must have a parent')
+  })
+
+  it('throws if an Index route has children', () => {
+
+    const createIndexChildren = () => createRoute()(
+      <Route path='/' component={ Parent }>
+        <Index component={ Child }>
+          <Route path='grandchild' component={ Grandchild }/>
+        </Index>
+      </Route>
+    )
+
+    expect(createIndexChildren)
+      .to.throw(Error, '<Index/> routes cannot have children')
+  })
+
   it('creates a route with children', () => {
 
     const parent = createRoute()(

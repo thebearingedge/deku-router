@@ -24,6 +24,12 @@ describe('utils-collection', () => {
       expect(taken).to.deep.equal([0, 1])
     })
 
+    it('returns an empty array', () => {
+      const collection = []
+      const taken = takeWhile(collection, item => !!item)
+      expect(taken).to.deep.equal([])
+    })
+
   })
 
   describe('takeRightWhile(collection, test)', () => {
@@ -32,6 +38,12 @@ describe('utils-collection', () => {
       const collection = [0, 1, 2]
       const taken = takeRightWhile(collection, item => item > 0)
       expect(taken).to.deep.equal([1, 2])
+    })
+
+    it('returns an empty array', () => {
+      const collection = []
+      const taken = takeRightWhile(collection, item => !!item)
+      expect(taken).to.deep.equal([])
     })
 
   })

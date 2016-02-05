@@ -29,7 +29,7 @@ export default function createRouter(root, history, { getState, dispatch }) {
 
   const transitionTo = (location, { navigating = false } = {}) => {
 
-    return createTransition(state, location, getState())
+    return createTransition(state, location, getState(), dispatch)
       .then(({ toState, redirects, actions }) => {
 
         Object.assign(state, toState, { transition: null })

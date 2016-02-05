@@ -3,7 +3,7 @@ import matchLocation from './match-location'
 import { compact, flatMap } from './utils-collection'
 import { invokeAsync } from './utils-async'
 
-const createTransition = (fromState, location, context, redirects = []) =>
+const createTransition = (fromState, location, context, dispatch, redirects = []) =>
 
   new Promise((resolve, reject) => {
 
@@ -24,11 +24,11 @@ const createTransition = (fromState, location, context, redirects = []) =>
 
       redirects.push(url)
 
-      resolve(createTransition(fromState, location, context, redirects))
+      resolve(createTransition(fromState, location, context, dispatch, redirects))
     }
 
 
-    const transitioning = fromState.transition = {
+    const transition = fromState.transition = {
       toState,
       redirects,
       get isCancelled() { return fromState.transition !== this }
@@ -46,12 +46,12 @@ const createTransition = (fromState, location, context, redirects = []) =>
     ))
 
 
-    const transition = { fromState, toState, context, redirectTo }
+    const trx = { fromState, toState, context, dispatch, redirectTo }
 
 
     Promise
-      .all(stateHooks.map(hook => invokeAsync(hook, transition)))
-      .then(actions => resolve({ ...transitioning, actions }))
+      .all(stateHooks.map(hook => invokeAsync(hook, trx)))
+      .then(actions => resolve({ ...transition, actions }))
       .catch(reject)
   })
 

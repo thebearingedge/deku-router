@@ -73,7 +73,16 @@ describe('findAsyncResult(fns, ...args)', () => {
 
     const found = findAsyncResult(fns)
 
-    return expect(found).to.eventually.be.rejectedWith('Oops')
+    return expect(found).to.eventually.be.rejectedWith(Error, 'Oops')
+  })
+
+  it('rejects if callback throws an error', () => {
+
+    const fns = [function () { throw new Error('Oops') }]
+
+    const throwError = () => findAsyncResult(fns)
+
+    return expect(throwError()).to.eventually.be.rejectedWith(Error, 'Oops')
   })
 
 })
