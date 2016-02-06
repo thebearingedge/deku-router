@@ -15,11 +15,48 @@ describe('createHistory(window, options)', () => {
 
   beforeEach(() => window = createWindow())
 
+  it('handles multiple subscribers', () => {
+
+    window.location = mockLocation('example.com')
+
+    const history = createHistory(window)
+
+    const location = history.getLocation()
+
+    const subscriberOne = spy()
+    const subscriberTwo = spy()
+
+    history.listen(subscriberOne)
+    history.listen(subscriberTwo)
+
+    window.dispatchEvent({ type: 'popstate' })
+
+    expect(subscriberOne).to.have.been.calledWithExactly(location)
+    expect(subscriberTwo).to.have.been.calledWithExactly(location)
+    expect(subscriberOne).to.have.been.calledBefore(subscriberTwo)
+  })
+
+  it('allows listeners to unsubscribe', () => {
+
+    window.location = mockLocation('example.com')
+
+    const history = createHistory(window)
+    const subscriber = spy()
+
+    const unsubscribe = history.listen(subscriber)
+
+    unsubscribe()
+
+    window.dispatchEvent({ type: 'popstate' })
+
+    expect(subscriber).not.to.have.been.called
+  })
+
   it('falls back to using location.hash', () => {
 
     delete window.history
 
-    window.location = mockLocation('example.com/#/foo?bar=baz#qux')
+    window.location = mockLocation('example.com')
 
     const history = createHistory(window)
 
@@ -27,11 +64,11 @@ describe('createHistory(window, options)', () => {
 
     expect(window.addEventListener).to.have.been.calledWith('hashchange')
     expect(history.getLocation()).to.deep.equal({
-      url: '/foo?bar=baz#qux',
-      pathname: '/foo',
-      query: { bar: 'baz' },
-      search: '?bar=baz',
-      hash: '#qux'
+      url: '/',
+      pathname: '/',
+      query: {},
+      search: '',
+      hash: ''
     })
   })
 

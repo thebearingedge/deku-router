@@ -10,14 +10,25 @@ export default function createHistory(window, { useHash = false } = {}) {
 
   let listener
 
+  const subscribers = []
+
   const watch = () => window.addEventListener(eventType, listener)
 
   const ignore = () => window.removeEventListener(eventType, listener)
 
   const listen = hook => {
 
-    listener = () => hook(getLocation())
-    watch()
+    const length = subscribers.push(hook)
+
+    if (!listener) {
+      listener = () => {
+        const location = getLocation()
+        subscribers.forEach(hook => hook(location))
+      }
+      watch()
+    }
+
+    return () => subscribers.splice(length - 1, 1)
   }
 
   const push = url => {

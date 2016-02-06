@@ -12,10 +12,7 @@
     "test": "karma start --single-run",
     "tdd": "npm -s test -- --auto-watch --no-single-run",
     "cover": "npm -s test -- --reporters='mocha,coverage'",
-    "compile": "npm -s t && npm run -s clean && babel src -d lib",
-    "bundle": "browserify -t babelify demo/index.js -o bundle.js",
-    "watch": "watchify -v -d -t babelify demo/index.js -o bundle.js",
-    "start": "http-server -s -p 3000 ."
+    "compile": "npm -s t && npm run -s clean && babel src -d lib"
   },
   "author": "",
   "license": "",
