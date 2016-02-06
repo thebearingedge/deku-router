@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "main": "lib/index.js",
+  "bin": {
+    "karma": "node_modules/.bin/karma-cli"
+  },
   "scripts": {
     "clean": "rimraf lib",
     "lint": "eslint src/**/*.js test/**/*.js",
