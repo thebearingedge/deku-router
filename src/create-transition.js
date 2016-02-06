@@ -3,7 +3,7 @@ import matchLocation from './match-location'
 import { compact, flatMap } from './utils-collection'
 import { invokeAsync } from './utils-async'
 
-const createTransition = (fromState, location, context, dispatch, redirects = []) =>
+const createTransition = (fromState, location, store, { redirects = [], serving = false } = {}) =>
 
   new Promise((resolve, reject) => {
 
@@ -11,6 +11,11 @@ const createTransition = (fromState, location, context, dispatch, redirects = []
     const toState = matchLocation(routes, location)
     const { url } = toState.location
 
+    const transition = fromState.transition = {
+      toState,
+      redirects,
+      get isCancelled() { return fromState.transition !== this }
+    }
 
     if (redirects.includes(url)) {
 
@@ -24,14 +29,16 @@ const createTransition = (fromState, location, context, dispatch, redirects = []
 
       redirects.push(url)
 
-      resolve(createTransition(fromState, location, context, dispatch, redirects))
-    }
+      if (serving) {
 
+        const toState = matchLocation(routes, location)
 
-    const transition = fromState.transition = {
-      toState,
-      redirects,
-      get isCancelled() { return fromState.transition !== this }
+        fromState.transition = null
+
+        return resolve({ ...transition, toState })
+      }
+
+      resolve(createTransition(fromState, location, store, { redirects }))
     }
 
 
@@ -45,9 +52,10 @@ const createTransition = (fromState, location, context, dispatch, redirects = []
         : component.loadState
     ))
 
+    const context = store.getState()
+    const { dispatch } = store
 
     const trx = { fromState, toState, context, dispatch, redirectTo }
-
 
     Promise
       .all(stateHooks.map(hook => invokeAsync(hook, trx)))

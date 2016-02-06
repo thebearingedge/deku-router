@@ -6,30 +6,30 @@ import matchLocation from './match-location'
 import createTransition from './create-transition'
 import createRouteElement from './create-route-element'
 
-export default function createRouter(root, history, { getState, dispatch }) {
-
-  history.listen(location => transitionTo(location, { navigating: true }))
+export default function createRouter(root, history, store) {
 
   const Router = {}
   const routes = createRoute()(root)
-  const location = getState().location
+  const { getState, dispatch } = store
 
+  const { location } = getState()
 
   const state = { ...matchLocation(routes, location), transition: null }
 
+  history.listen(location => transitionTo(location, { navigating: true }))
 
   const render = () => {
 
     const { route, params, location } = state
     const { query } = location
 
-    return createRouteElement(Router, route, params, query)
+    return createRouteElement(route, params, query)
   }
 
 
   const transitionTo = (location, { navigating = false } = {}) => {
 
-    return createTransition(state, location, getState(), dispatch)
+    return createTransition(state, location, store)
       .then(({ toState, redirects, actions }) => {
 
         Object.assign(state, toState, { transition: null })

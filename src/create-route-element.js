@@ -2,7 +2,7 @@
 import { h } from 'deku'
 import { isFunction } from './utils-object'
 
-const createRouteElement = (router, route, params = {}, query = {}) => {
+const createRouteElement = (route, params = {}, query = {}) => {
 
   const { branch, index } = route
 
@@ -11,7 +11,7 @@ const createRouteElement = (router, route, params = {}, query = {}) => {
   if (index) routes.push(index)
 
   const { component } = routes.shift()
-  const routerProps = { router, params, query, routeParams: {} }
+  const routerProps = { params, query, routeParams: {} }
   const element = h(component, routerProps)
 
   routes.reduce((targets, { getOwnParams, component, components }) => {

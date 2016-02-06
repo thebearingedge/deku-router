@@ -10,7 +10,7 @@ import * as components from './fixtures/components'
 
 const { Parent, Home, Child, Sibling, Grandchild, Main, Sidebar } = components
 
-describe('createRouteElement(router, route)', () => {
+describe('createRouteElement(route)', () => {
 
   const router = {}
 
@@ -43,46 +43,46 @@ describe('createRouteElement(router, route)', () => {
   })
 
   it('renders itself', () => {
-    render(createRouteElement(router, parent))
+    render(createRouteElement(parent))
     expect(sandbox.textContent).to.equal('parent home ')
   })
 
   it('renders its parent containing itself', () => {
-    render(createRouteElement(router, child))
+    render(createRouteElement(child))
     expect(sandbox.textContent).to.equal('parent child ')
-    render(createRouteElement(router, sibling))
+    render(createRouteElement(sibling))
     expect(sandbox.textContent).to.equal('parent sibling ')
   })
 
   it('renders its grandparent, parent, wrapper, and itself', () => {
-    render(createRouteElement(router, grandchild))
+    render(createRouteElement(grandchild))
     expect(sandbox.textContent).to.equal('parent child home grandchild ')
   })
 
   it('renders multiple components', () => {
-    render(createRouteElement(router, foo))
+    render(createRouteElement(foo))
     expect(sandbox.textContent).to.equal('parent sidebar main ')
   })
 
   it('nests named components', () => {
-    render(createRouteElement(router, bar))
+    render(createRouteElement(bar))
     expect(sandbox.textContent)
       .to.equal('parent sidebar grandchild main grandchild ')
   })
 
   it('renders param props', () => {
-    render(createRouteElement(router, sibling, { corge: 'grault' }))
+    render(createRouteElement(sibling, { corge: 'grault' }))
     expect(sandbox.textContent).to.equal('parent sibling grault')
   })
 
   it('renders its ownParam props', () => {
-    render(createRouteElement(router, baz, { baz: 42 }))
+    render(createRouteElement(baz, { baz: 42 }))
     expect(sandbox.textContent)
       .to.equal('parent child home grandchild 42')
   })
 
   it('renders query props', () => {
-    render(createRouteElement(router, child, {}, { qux: 'quux' }))
+    render(createRouteElement(child, {}, { qux: 'quux' }))
     expect(sandbox.textContent)
       .to.equal('parent child quux')
   })
