@@ -1,5 +1,5 @@
 
-export const compact = array => array.filter(item => !!item)
+export const compact = array => array.filter(Boolean)
 
 
 export const flatMap = (array, cb) => [].concat(...array.map(cb))
