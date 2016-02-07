@@ -26,16 +26,12 @@
     "babelify": "7.2.0",
     "browserify": "13.0.0",
     "browserify-babel-istanbul": "0.3.0",
-    "browserify-hmr": "0.3.1",
     "chai": "3.5.0",
     "chai-as-promised": "5.2.0",
     "deku": "2.0.0-rc16",
-    "deku-redux-connect": "0.1.8",
     "eslint": "1.10.3",
     "eslint-plugin-react": "3.16.1",
     "global": "4.3.0",
-    "http-server": "0.8.5",
-    "jsdom": "8.0.2",
     "karma": "0.13.19",
     "karma-babel-preprocessor": "6.0.1",
     "karma-browserify": "5.0.1",
@@ -44,11 +40,9 @@
     "karma-jsdom-launcher": "3.0.0",
     "karma-mocha": "0.2.1",
     "karma-mocha-reporter": "1.1.5",
-    "karma-source-map-support": "1.1.0",
-    "karma-sourcemap-loader": "0.3.7",
     "mocha": "2.4.5",
     "mock-location": "0.2.0",
-    "redux": "3.2.1",
+    "redux": "3.3.1",
     "redux-batched-actions": "0.1.2",
     "rimraf": "2.5.1",
     "sinon": "1.17.3",
@@ -60,7 +54,7 @@
   },
   "peerDependencies": {
     "deku": "2.0.0-rc16",
-    "redux": "3.1.4",
+    "redux": "3.3.1",
     "redux-batched-actions": "0.1.1"
   }
 }
