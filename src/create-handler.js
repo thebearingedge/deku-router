@@ -6,10 +6,10 @@ import createRouteElement from './create-route-element'
 import matchLocation from './match-location'
 import createTransition from './create-transition'
 
-const createHandler = (root, location = '/') => {
+const createHandler = root => {
 
   const routes = createRoute()(root)
-  const rootState = { ...matchLocation(routes, location), transition: null }
+  const rootState = { ...matchLocation(routes, '/'), transition: null }
 
   return (location, store, done) => {
 
@@ -21,15 +21,16 @@ const createHandler = (root, location = '/') => {
         const { location, route, params } = toState
         const { query } = location
 
-        const redirect = redirects.length ? location.url : null
+        if (redirects.length) {
 
-        if (redirect) return done(null, redirect, null)
+          return done(null, location.url, null)
+        }
 
         store.dispatch(batchActions([routeChange(location), ...actions]))
 
         const Element = createRouteElement(route, params, query)
 
-        done(null, redirect, Element)
+        done(null, null, Element)
       })
       .catch(done)
   }

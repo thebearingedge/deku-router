@@ -20,11 +20,22 @@ describe('createHandler(routes, location = "/"', () => {
     store = createStore(enableBatching(combineReducers({ location })))
   })
 
-  it('serves suckas!', done => {
+  it('serves a matched element', done => {
 
     match('/', store, (err, redirect, Element) => {
       if (err) return done(err)
-      expect(err).to.be.null
+      expect(redirect).to.be.null
+      expect(Element).to.be.oke
+      done()
+    })
+  })
+
+  it('server a redirect url', done => {
+
+    match('/redirects', store, (err, redirect, Element) => {
+      if (err) return done(err)
+      expect(redirect).to.equal('/')
+      expect(Element).to.be.null
       done()
     })
   })

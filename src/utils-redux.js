@@ -11,7 +11,7 @@ export const routeChange = location =>
 
 export const routeReducer = history => {
 
-  const location = typeof history === 'object'
+  const location = history instanceof Object
     ? history.getLocation()
     : extract(history)
 
