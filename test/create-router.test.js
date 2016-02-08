@@ -67,6 +67,20 @@ const LoopFrom = {
   loadState({ redirectTo }) { redirectTo('/loop-to') }
 }
 
+const routes = (
+  <Route path='/' component={ App }>
+    <Index component={ Home }/>
+    <Route path='page' component={ Page }>
+      <Route path='about' component={ About }/>
+      <Route path='master-detail' components={{ Sidebar, Main }}/>
+      <Route path='redirects-again' component={ RedirectsAgain }/>
+    </Route>
+    <Route path='redirects' component={ Redirects }/>
+    <Route path='loop-to' component={ LoopTo }/>
+    <Route path='loop-from' component={ LoopFrom }/>
+  </Route>
+)
+
 describe('createRouter(routes, history, store)', () => {
 
   let window, node, render, history, store, Router
@@ -93,20 +107,6 @@ describe('createRouter(routes, history, store)', () => {
     }))
 
     store = createStore(reducers)
-
-    const routes = (
-      <Route path='/' component={ App }>
-        <Index component={ Home }/>
-        <Route path='page' component={ Page }>
-          <Route path='about' component={ About }/>
-          <Route path='master-detail' components={{ Sidebar, Main }}/>
-          <Route path='redirects-again' component={ RedirectsAgain }/>
-        </Route>
-        <Route path='redirects' component={ Redirects }/>
-        <Route path='loop-to' component={ LoopTo }/>
-        <Route path='loop-from' component={ LoopFrom }/>
-      </Route>
-    )
 
     Router = createRouter(routes, history, store)
 

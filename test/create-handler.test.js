@@ -11,9 +11,9 @@ describe('createHandler(routes, location = "/"', () => {
 
   let match, store
 
-  beforeEach(() => {
+  before(() => match = createHandler(routes))
 
-    match = createHandler(routes)
+  beforeEach(() => {
 
     const location = routeReducer('/')
 
@@ -25,7 +25,8 @@ describe('createHandler(routes, location = "/"', () => {
     match('/', store, (err, redirect, Element) => {
       if (err) return done(err)
       expect(redirect).to.be.null
-      expect(Element).to.be.oke
+      expect(Element).not.to.be.null
+      expect(Element).to.have.property('type', '#thunk')
       done()
     })
   })

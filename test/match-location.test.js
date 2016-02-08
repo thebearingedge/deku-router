@@ -7,34 +7,29 @@ import { h } from 'deku'
 
 describe('matchLocation(routes, location)', () => {
 
-  let routes
+  const paramTypes = { qux: Number, garply: Number }
 
-  before(() => {
-
-    const paramTypes = { qux: Number, garply: Number }
-
-    routes = createRoute()(
-      <Route path='/'>
-        <Route path='foo'>
-          <Route path='bar'/>
-        </Route>
-        <Route path='baz'>
-          <Route path=':qux' paramTypes={ paramTypes }>
-            <Route path='quux'>
-              <Route path='corge'/>
-            </Route>
-            <Route path='*notFound'/>
+  const routes = createRoute()(
+    <Route path='/'>
+      <Route path='foo'>
+        <Route path='bar'/>
+      </Route>
+      <Route path='baz'>
+        <Route path=':qux' paramTypes={ paramTypes }>
+          <Route path='quux'>
+            <Route path='corge'/>
           </Route>
-        </Route>
-        <Route path='grault/:garply' paramTypes={ paramTypes }>
-          <Route>
-            <Route path='waldo'/>
-            <Route path='/fred'/>
-          </Route>
+          <Route path='*notFound'/>
         </Route>
       </Route>
-    )
-  })
+      <Route path='grault/:garply' paramTypes={ paramTypes }>
+        <Route>
+          <Route path='waldo'/>
+          <Route path='/fred'/>
+        </Route>
+      </Route>
+    </Route>
+  )
 
   it('matches "/"', () => {
     const url = '/'
