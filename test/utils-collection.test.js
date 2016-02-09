@@ -2,7 +2,7 @@
 import { expect } from 'chai'
 import { compact, takeWhile, takeRightWhile } from '../src/utils-collection'
 
-describe('utils-collection', () => {
+describe.only('utils-collection', () => {
 
   describe('compact(collection)', () => {
 
@@ -19,9 +19,9 @@ describe('utils-collection', () => {
   describe('takeWhile(collection, test)', () => {
 
     it('takes until test is false', () => {
-      const collection = [0, 1, 2]
+      const collection = [-1, 0, 1, 2]
       const taken = takeWhile(collection, item => item <= 1)
-      expect(taken).to.deep.equal([0, 1])
+      expect(taken).to.deep.equal([-1, 0, 1])
     })
 
     it('returns an empty array', () => {
@@ -35,9 +35,9 @@ describe('utils-collection', () => {
   describe('takeRightWhile(collection, test)', () => {
 
     it('takes from end of collection until test is false', () => {
-      const collection = [0, 1, 2]
+      const collection = [0, 1, 2, 3]
       const taken = takeRightWhile(collection, item => item > 0)
-      expect(taken).to.deep.equal([1, 2])
+      expect(taken).to.deep.equal([1, 2, 3])
     })
 
     it('returns an empty array', () => {
