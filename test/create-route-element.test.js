@@ -34,11 +34,11 @@ describe('createRouteElement(route)', () => {
         </Route>
       </Route>
     )
-    child = parent.children[1]
-    sibling = parent.children[2]
+    child = parent.children[0]
+    sibling = parent.children[1]
     grandchild = child.children[0].children[0]
     baz = child.children[0].children[1]
-    foo = parent.children[3]
+    foo = parent.children[2]
     bar = foo.children[0]
   })
 

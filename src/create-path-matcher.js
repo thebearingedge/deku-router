@@ -1,5 +1,6 @@
 
 import createSegmentMatcher from './create-segment-matcher'
+import { compact, zipWith } from './utils-collection'
 
 
 export default function createPathMatcher(path = '', paramTypes = {}) {
@@ -44,35 +45,12 @@ const filterParams = (params, ownParams) =>
 
 const createParams = (matchers, unmatched) => {
 
-  const matched = []
-  let i = 0
+  const matched = compact(zipWith(matchers, unmatched, (matcher, segment) =>
 
-  while (i < matchers.length && matchers.length <= unmatched.length) {
-
-    let param
-    const matcher = matchers[i]
-
-    if (matcher.type === 'root') return {}
-
-    if (matcher.type === 'splat') {
-
-      const path = unmatched.splice(0).join('/')
-
-      param = matcher.toParam(path)
-    }
-    else {
-
-      param = matcher.toParam(unmatched[i])
-    }
-
-    if (param) {
-
-      matched.push(param)
-
-      i++
-    }
-    else break
-  }
+    matcher.type === 'splat'
+      ? matcher.toParam(unmatched.splice(0).join('/'))
+      : matcher.toParam(segment)
+  ))
 
   if (matched.length < matchers.length) return null
 

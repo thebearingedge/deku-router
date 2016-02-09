@@ -21,7 +21,7 @@ const createRoute = (parent = null) => ({ props, children, component }) => {
   }
   else {
 
-    const { path, paramTypes } = route
+    const { path, paramTypes } = props
 
     Object.assign(route, createPathMatcher(path, paramTypes))
 
@@ -30,7 +30,9 @@ const createRoute = (parent = null) => ({ props, children, component }) => {
       route.root.children.push(route)
     }
 
-    route.children = route.children.concat(children.map(createRoute(route)))
+    route.children = route.children
+      .concat(children.map(createRoute(route)))
+      .filter(child => child !== route.index)
   }
 
   return route

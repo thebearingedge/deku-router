@@ -35,3 +35,6 @@ export const takeRightWhile = (array, test) =>
   test(last(array))
     ? [...takeRightWhile(init(array), test), last(array)]
     : []
+
+
+export const zipWith = (xs, ys, cb) => xs.map((_, i) => cb(xs[i], ys[i]))

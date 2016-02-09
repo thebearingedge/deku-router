@@ -1,8 +1,10 @@
 
 import { expect } from 'chai'
-import { compact, takeWhile, takeRightWhile } from '../src/utils-collection'
+import * as utils from '../src/utils-collection'
 
-describe.only('utils-collection', () => {
+const { compact, takeWhile, takeRightWhile, zipWith } = utils
+
+describe('utils-collection', () => {
 
   describe('compact(collection)', () => {
 
@@ -44,6 +46,18 @@ describe.only('utils-collection', () => {
       const collection = []
       const taken = takeRightWhile(collection, item => !!item)
       expect(taken).to.deep.equal([])
+    })
+
+  })
+
+
+  describe('zipWith(xs, ys, callback)', () => {
+
+    it('combines arrays via callback', () => {
+      const xs = [42, false, '0']
+      const ys = [String, val => !val, val => +val]
+      const zipped = zipWith(xs, ys, (x, y) => y(x))
+      expect(zipped).to.deep.equal(['42', true, 0])
     })
 
   })

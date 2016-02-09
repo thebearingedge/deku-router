@@ -31,7 +31,7 @@ describe('createHandler(routes, location = "/"', () => {
     })
   })
 
-  it('server a redirect url', done => {
+  it('serves a redirect url', done => {
 
     match('/redirects', store, (err, redirect, Element) => {
       if (err) return done(err)

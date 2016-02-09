@@ -28,7 +28,7 @@ const matchLocation = (routes, location) => {
 
       const child = children[i]
 
-      params = child.toParams && child.toParams(unmatched)
+      params = child.path ? child.toParams(unmatched) : {}
 
       if (!params) continue
 
@@ -50,9 +50,12 @@ const matchLocation = (routes, location) => {
 
       const params = matches.pop()
 
-      const path = route.toPath(params)
+      if (route.path) {
 
-      unmatched.unshift(path)
+        const path = route.toPath(params)
+
+        unmatched.unshift(path)
+      }
 
       route = route.parent
       children = route.children
