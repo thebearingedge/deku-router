@@ -8,9 +8,14 @@ export default function createHistory(window, { useHash = false } = {}) {
   const useHistory = !!history && !useHash
   const eventType = useHistory ? 'popstate' : 'hashchange'
 
-  let listener
-
   const subscribers = []
+
+  const listener = () => {
+
+    const location = getLocation()
+
+    subscribers.forEach(hook => hook(location))
+  }
 
   const watch = () => window.addEventListener(eventType, listener)
 
@@ -18,31 +23,42 @@ export default function createHistory(window, { useHash = false } = {}) {
 
   const listen = hook => {
 
-    const length = subscribers.push(hook)
+    subscribers.length || watch()
 
-    if (!listener) {
-      listener = () => {
-        const location = getLocation()
-        subscribers.forEach(hook => hook(location))
-      }
-      watch()
+    const index = subscribers.push(hook) - 1
+
+    return () => {
+
+      const hook = subscribers.splice(index, 1)[0]
+
+      subscribers.length || ignore()
+
+      return hook
     }
-
-    return () => subscribers.splice(length - 1, 1)
   }
 
-  const push = url => {
-    if (useHistory) history.pushState({}, null, url)
+  const push = (url, { notify = true } = {}) => {
+
+    if (useHistory) {
+
+      history.pushState({}, null, url)
+    }
     else {
 
       ignore()
       location.hash = url
       watch()
     }
+
+    notify && listener()
   }
 
-  const replace = url => {
-    if (useHistory) history.replaceState({}, null, url)
+  const replace = (url, { notify = true } = {}) => {
+
+    if (useHistory) {
+
+      history.replaceState({}, null, url)
+    }
     else {
 
       const { origin, pathname, search } = location
@@ -52,6 +68,8 @@ export default function createHistory(window, { useHash = false } = {}) {
       location.replace(href)
       watch()
     }
+
+    notify && listener()
   }
 
   const getLocation = () => {

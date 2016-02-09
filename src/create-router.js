@@ -35,13 +35,14 @@ export default function createRouter(root, history, store) {
         Object.assign(state, toState, { transition: null })
 
         const { location } = toState
+        const notify = false
 
         if (navigating && redirects.length) {
 
-          history.replace(location.url)
+          history.replace(location.url, { notify })
         }
 
-        if (!navigating) history.push(location.url)
+        if (!navigating) history.push(location.url, { notify })
 
         dispatch(batchActions([routeChange(location), ...actions]))
       })
