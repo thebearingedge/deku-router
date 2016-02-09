@@ -1,6 +1,7 @@
 
 import { extract } from './utils-url'
 
+
 const matchLocation = (routes, location) => {
 
   location instanceof Object || (location = extract(location))
@@ -72,5 +73,6 @@ const matchLocation = (routes, location) => {
 
   return { route, params: Object.assign(...matches), location }
 }
+
 
 export default matchLocation

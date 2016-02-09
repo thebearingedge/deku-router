@@ -1,14 +1,15 @@
 
 import { extract } from './utils-url'
 
+
 export default function createHistory(window, { useHash = false } = {}) {
 
   const { history, location } = window
 
   const useHistory = !!history && !useHash
   const eventType = useHistory ? 'popstate' : 'hashchange'
-
   const subscribers = []
+
 
   const listener = () => {
 
@@ -17,9 +18,12 @@ export default function createHistory(window, { useHash = false } = {}) {
     subscribers.forEach(hook => hook(location))
   }
 
+
   const watch = () => window.addEventListener(eventType, listener)
 
+
   const ignore = () => window.removeEventListener(eventType, listener)
+
 
   const listen = hook => {
 
@@ -37,6 +41,7 @@ export default function createHistory(window, { useHash = false } = {}) {
     }
   }
 
+
   const push = (url, { notify = true } = {}) => {
 
     if (useHistory) {
@@ -52,6 +57,7 @@ export default function createHistory(window, { useHash = false } = {}) {
 
     notify && listener()
   }
+
 
   const replace = (url, { notify = true } = {}) => {
 
@@ -72,6 +78,7 @@ export default function createHistory(window, { useHash = false } = {}) {
     notify && listener()
   }
 
+
   const getLocation = () => {
 
     const { pathname, search, hash } = location
@@ -79,6 +86,7 @@ export default function createHistory(window, { useHash = false } = {}) {
 
     return extract(decodeURIComponent(url))
   }
+
 
   return { push, listen, replace, getLocation }
 }

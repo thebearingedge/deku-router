@@ -3,6 +3,7 @@ import matchLocation from './match-location'
 import { compact, flatMap } from './utils-collection'
 import { invokeAsync } from './utils-async'
 
+
 const createTransition = (fromState, location, store, { redirects = [], serving = false } = {}) =>
 
   new Promise((resolve, reject) => {

@@ -11,12 +11,12 @@ export default function createRouter(root, history, store) {
   const Router = {}
   const routes = createRoute()(root)
   const { getState, dispatch } = store
-
   const { location } = getState()
-
   const state = { ...matchLocation(routes, location), transition: null }
 
+
   history.listen(location => transitionTo(location, { navigating: true }))
+
 
   const render = () => {
 
@@ -35,18 +35,20 @@ export default function createRouter(root, history, store) {
         Object.assign(state, toState, { transition: null })
 
         const { location } = toState
+        const { url } = location
         const notify = false
 
         if (navigating && redirects.length) {
 
-          history.replace(location.url, { notify })
+          history.replace(url, { notify })
         }
 
-        if (!navigating) history.push(location.url, { notify })
+        if (!navigating) history.push(url, { notify })
 
         dispatch(batchActions([routeChange(location), ...actions]))
       })
   }
+
 
   return Object.assign(Router, { state, render, transitionTo })
 }

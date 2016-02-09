@@ -1,6 +1,7 @@
 
 import createSegmentMatcher from './create-segment-matcher'
 
+
 export default function createPathMatcher(path = '', paramTypes = {}) {
 
   const splitPath = path.split('/')
@@ -32,6 +33,7 @@ export default function createPathMatcher(path = '', paramTypes = {}) {
 
   return { isAbsolute, isSplat, specificity, toParams, toPath, getOwnParams }
 }
+
 
 const filterParams = (params, ownParams) =>
 

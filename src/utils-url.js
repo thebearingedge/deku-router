@@ -1,6 +1,7 @@
 
 import { parse, stringify } from 'query-string'
 
+
 export const extract = url => {
 
   if (typeof url !== 'string') return {}

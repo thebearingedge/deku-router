@@ -2,6 +2,7 @@
 import Index from './component-index'
 import createPathMatcher from './create-path-matcher'
 
+
 const createRoute = (parent = null) => ({ props, children, component }) => {
 
   const route = { parent, children: [], ...props }
@@ -34,5 +35,6 @@ const createRoute = (parent = null) => ({ props, children, component }) => {
 
   return route
 }
+
 
 export default createRoute

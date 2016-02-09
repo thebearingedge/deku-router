@@ -2,6 +2,7 @@
 import { h } from 'deku'
 import { isFunction } from './utils-object'
 
+
 const createRouteElement = (route, params = {}, query = {}) => {
 
   const { branch, index } = route
