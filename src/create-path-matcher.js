@@ -35,7 +35,7 @@ export default function createPathMatcher(path = '', paramTypes = {}) {
   const { length } = compact(segments)
 
 
-  return { matches, length, isAbsolute, isSplat, specificity, toParams, toPath, getOwnParams }
+  return { matches, matchers, length, isAbsolute, isSplat, specificity, toParams, toPath, getOwnParams }
 }
 
 const isMatch = (matchers, segments) =>

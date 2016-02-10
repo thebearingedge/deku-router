@@ -1,80 +1,92 @@
 
 import { extract } from './utils-url'
+import * as utils from './utils-collection'
+
+const { take, takeRight, drop, dropRight, flatMap, zipWith } = utils
 
 
-const matchLocation = (routes, location) => {
+const matchLocation = (root, location) => {
 
   location instanceof Object || (location = extract(location))
 
-  let route = routes
+  if (location.pathname === '/' && root.path === '/') {
 
-  if (location.pathname === '/' && route.path === '/') {
-
-    return { route, params: {}, location }
+    return { route: root, params: {}, location }
   }
 
-  const unmatched = location.pathname.split('/').slice(1)
-  const matches = [{}]
+  const notFound = { route: null, params: null, location }
+  const segments = location.pathname.split('/').slice(1)
 
-  let children = [...route.children]
+  let { route, matched } = matchRoute(root, segments)
 
-  while (unmatched.length && children.length) {
+  if (!route) return notFound
 
-    let params
+  if (matched.length < segments.length) {
 
-    children.sort((a, b) => a.specificity < b.specificity)
+    const remaining = drop(matched.length, segments)
 
-    for (let i = 0; i < children.length; i++) {
+    const { splat, rematched } = findSplat(route, matched, remaining)
 
-      const child = children[i]
+    if (!splat) return notFound
 
-      params = child.path ? child.toParams(unmatched) : {}
-
-      if (!params) continue
-
-      matches.push(params)
-
-      route = child
-      children = [...route.children]
-
-      break
-    }
-
-    if (!params) break
+    route = splat
+    matched = rematched
   }
 
+  const withPath = route.branch.filter(({ path, isRoot }) => path && !isRoot)
+  const matchers = flatMap(withPath, ({ matchers }) => matchers)
+  const allParams = zipWith(matchers, matched, ({ toParam }, segment) =>
 
-  if (unmatched.length) {
+    toParam(segment))
 
-    while (route.parent) {
+  const params = Object.assign({}, ...allParams)
 
-      const params = matches.pop()
+  return { route, params, location }
+}
 
-      if (route.path) {
 
-        const path = route.toPath(params)
+const matchRoute = ({ children }, segments, found = { matched: [] }) => {
 
-        unmatched.unshift(path)
-      }
+  const route = [...children]
+    .sort((a, b) => a.specificity < b.specificity)
+    .find(({ path, matches }) => !path || matches(segments))
 
-      route = route.parent
-      children = route.children
+  if (!route) return found
 
-      const splat = children.find(route => route.isSplat)
+  const unmatched = drop(route.length, segments)
 
-      if (!splat) continue
+  if (!unmatched.length) {
 
-      route = splat
-
-      matches.push(route.toParams(unmatched))
-
-      break
+    return {
+      route,
+      matched: found.matched.concat(segments)
     }
   }
 
-  if (unmatched.length) return { route: null, params: null, location }
+  return matchRoute(route, unmatched, {
+    route,
+    matched: found.matched.concat(take(route.length, segments))
+  })
+}
 
-  return { route, params: Object.assign(...matches), location }
+
+const findSplat = ({ parent, matchers }, matched, unmatched) => {
+
+  if (!parent) return { splat: null }
+
+  unmatched.unshift(...takeRight(matchers.length, matched))
+
+  const rematched = dropRight(matchers.length, matched)
+  const splat = parent.children.find(route => route.isSplat)
+
+  if (splat) {
+
+    rematched.push(unmatched.join('/'))
+
+    return { splat, rematched }
+  }
+
+  return findSplat(parent, rematched, unmatched)
 }
 
 

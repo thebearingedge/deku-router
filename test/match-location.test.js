@@ -7,7 +7,7 @@ import { h } from 'deku'
 
 describe('matchLocation(routes, location)', () => {
 
-  const paramTypes = { qux: Number, garply: Number }
+  const paramTypes = { qux: Number, garply: p => p ? Number(p) : 42 }
 
   const routes = createRoute()(
     <Route path='/'>
@@ -114,7 +114,7 @@ describe('matchLocation(routes, location)', () => {
   it('matches absolute routes', () => {
     const { route, params } = matchLocation(routes, '/fred')
     expect(route).to.have.property('path', '/fred')
-    expect(params).to.deep.equal({})
+    expect(params).to.deep.equal({ garply: 42 })
   })
 
   it('matches nested absolute routes', () => {
