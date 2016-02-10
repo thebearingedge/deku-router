@@ -1,40 +1,46 @@
 
-export const take = (count, array) => array.slice(0, count)
+export const take = (count = 0, xs) => xs.slice(0, count)
 
 
-export const head = array => array[0]
+export const head = xs => xs[0]
 
 
-export const tail = array => array.slice(1)
+export const drop = (count = 0, xs) => xs.slice(count)
 
 
-export const end = array => array.length - 1
+export const tail = xs => xs.slice(1)
 
 
-export const last = array => array[end(array)]
+export const end = xs => xs.length - 1
 
 
-export const init = array => take(end(array), array)
+export const last = xs => xs[end(xs)]
 
 
-export const compact = array => array.filter(Boolean)
+export const init = xs => take(end(xs), xs)
 
 
-export const flatMap = (array, cb) => [].concat(...array.map(cb))
+export const compact = xs => xs.filter(Boolean)
 
 
-export const takeWhile = (array, test) =>
+export const flatMap = (xs, cb) => [].concat(...xs.map(cb))
 
-  test(head(array))
-    ? [head(array), ...takeWhile(tail(array), test)]
+
+export const takeWhile = (xs, test = Boolean) =>
+
+  test(head(xs))
+    ? [head(xs), ...takeWhile(tail(xs), test)]
     : []
 
 
-export const takeRightWhile = (array, test) =>
+export const takeRightWhile = (xs, test = Boolean) =>
 
-  test(last(array))
-    ? [...takeRightWhile(init(array), test), last(array)]
+  test(last(xs))
+    ? [...takeRightWhile(init(xs), test), last(xs)]
     : []
 
 
 export const zipWith = (xs, ys, cb) => xs.map((_, i) => cb(xs[i], ys[i]))
+
+
+export const every = (xs, cb = Boolean) => xs.every(cb)
