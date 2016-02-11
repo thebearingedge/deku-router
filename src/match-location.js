@@ -23,9 +23,9 @@ const matchLocation = (root, location) => {
 
   if (matched.length < segments.length) {
 
-    const remaining = drop(matched.length, segments)
+    const unmatched = drop(matched.length, segments)
 
-    const { splat, rematched } = findSplat(route, matched, remaining)
+    const { splat, rematched } = findSplat(route, matched, unmatched)
 
     if (!splat) return notFound
 
