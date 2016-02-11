@@ -11,7 +11,7 @@ export const head = xs => xs[0]
 export const drop = (count = 0, xs) => xs.slice(count)
 
 
-export const dropRight = (count = 0, xs) => take(-count + xs.length, xs)
+export const dropRight = (count = 0, xs) => take(xs.length - count, xs)
 
 
 export const tail = xs => xs.slice(1)

@@ -26,16 +26,17 @@ export default function createPathMatcher(path = '', paramTypes = {}) {
     return createSegmentMatcher(segment, ParamType)
   })
 
-  const isSplat = path.startsWith('*')
-  const specificity = matchers.map(m => m.specificity).join('')
-  const toParams = segments => createParams(matchers, segments)
-  const toPath = params => createPath(matchers, params)
-  const getOwnParams = params => filterParams(params, paramKeys)
-  const matches = segments => isMatch(matchers, segments)
-  const { length } = compact(segments)
-
-
-  return { matches, matchers, length, isAbsolute, isSplat, specificity, toParams, toPath, getOwnParams }
+  return {
+    matches: segments => isMatch(matchers, segments),
+    matchers,
+    length: compact(segments).length,
+    isAbsolute,
+    isSplat: path.startsWith('*'),
+    specificity: matchers.map(m => m.specificity).join(''),
+    toParams: segments => createParams(matchers, segments),
+    toPath: params => createPath(matchers, params),
+    getOwnParams: params => filterParams(params, paramKeys)
+  }
 }
 
 const isMatch = (matchers, segments) =>
@@ -60,13 +61,11 @@ const createParams = (matchers, unmatched) => {
   const matched = compact(zipWith(matchers, unmatched, (matcher, segment) =>
 
     matcher.type === 'splat'
-      ? matcher.toParam(unmatched.splice(0).join('/'))
+      ? matcher.toParam(unmatched.join('/'))
       : matcher.toParam(segment)
   ))
 
   if (matched.length < matchers.length) return null
-
-  unmatched.splice(0, matchers.length)
 
   return Object.assign(...matched)
 }

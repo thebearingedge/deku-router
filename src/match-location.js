@@ -15,7 +15,7 @@ const matchLocation = (root, location) => {
   }
 
   const notFound = { route: null, params: null, location }
-  const segments = location.pathname.split('/').slice(1)
+  const segments = drop(1, location.pathname.split('/'))
 
   let { route, matched } = matchRoute(root, segments)
 
