@@ -1,30 +1,26 @@
 
 import createSegmentMatcher from './create-segment-matcher'
-import { compact, zipWith, every } from './utils-collection'
+import { tail, compact, zipWith, every } from './utils-collection'
 
 
 export default function createPathMatcher(path, paramTypes = {}) {
 
   const splitPath = path.split('/')
   const isAbsolute = path.startsWith('/')
-  const segments = isAbsolute ? splitPath.slice(1) : splitPath
-
-  const paramKeys = []
+  const segments = isAbsolute ? tail(splitPath) : splitPath
 
   const matchers = segments.map(segment => {
 
-    let ParamType
-
-    if (segment.startsWith(':')) {
-
-      const param = segment.slice(1)
-
-      paramKeys.push(param)
-      ParamType = paramTypes[param]
-    }
+    const ParamType = segment.startsWith(':')
+      ? paramTypes[tail(segment)]
+      : undefined
 
     return createSegmentMatcher(segment, ParamType)
   })
+
+  const paramKeys = matchers.reduce((keys, { type, key }) =>
+    type === 'dynamic' ? keys.concat(key) : keys
+  , [])
 
   return {
     matches: segments => isMatch(matchers, segments),
@@ -33,8 +29,6 @@ export default function createPathMatcher(path, paramTypes = {}) {
     isAbsolute,
     isSplat: path.startsWith('*'),
     specificity: matchers.map(m => m.specificity).join(''),
-    toParams: segments => createParams(matchers, segments),
-    toPath: params => createPath(matchers, params),
     getOwnParams: params => filterParams(params, paramKeys)
   }
 }
@@ -54,18 +48,3 @@ const filterParams = (params, paramKeys) =>
   paramKeys.reduce((own, param) =>
 
     ({ [param]: params[param], ...own }), {})
-
-
-const createParams = (matchers, unmatched) =>
-
-  Object.assign(...compact(zipWith(matchers, unmatched, (matcher, segment) =>
-
-    matcher.type === 'splat'
-      ? matcher.toParam(unmatched.join('/'))
-      : matcher.toParam(segment)
-  )))
-
-
-const createPath = (matchers, params) =>
-
-  matchers.map(m => m.toSegment(params))

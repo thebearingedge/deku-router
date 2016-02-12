@@ -1,6 +1,5 @@
 
 import { h } from 'deku'
-import { isFunction } from './utils-object'
 
 
 const createRouteElement = (route, params = {}, query = {}) => {
@@ -14,9 +13,9 @@ const createRouteElement = (route, params = {}, query = {}) => {
   const routerProps = { params, query, routeParams: {} }
   const element = h(component, routerProps)
 
-  routes.reduce((targets, { getOwnParams, component, components }) => {
+  routes.reduce((targets, { path, getOwnParams, component, components }) => {
 
-    const routeParams = isFunction(getOwnParams) ? getOwnParams(params) : {}
+    const routeParams = path ? getOwnParams(params) : {}
     const props = { ...routerProps, routeParams }
 
     return components

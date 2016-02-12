@@ -4,27 +4,28 @@ export default function createSegmentMatcher(segment, ParamType = String) {
   let type, key, specificity
 
   if (segment.startsWith('*')) {
-    type = 'splat'
     key = segment.slice(1)
+    type = 'splat'
     specificity = '2'
   }
   else if (segment.startsWith(':')) {
-    type = 'dynamic'
     key = segment.slice(1)
+    type = 'dynamic'
     specificity = '3'
   }
   else if (segment === '') {
-    type = 'root'
     key = ''
+    type = 'root'
     specificity = '1'
   }
   else {
-    type = 'exact'
     key = segment
+    type = 'exact'
     specificity = '4'
   }
 
   return {
+    key,
     type,
     specificity,
     matches: segment => isMatch(segment, type, key),
