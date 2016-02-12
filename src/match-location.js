@@ -25,7 +25,7 @@ const matchLocation = (root, location) => {
 
     const unmatched = drop(matched.length, segments)
 
-    const { splat, rematched } = findSplat(route, matched, unmatched)
+    const { splat, rematched } = matchSplat(route, matched, unmatched)
 
     if (!splat) return notFound
 
@@ -33,13 +33,7 @@ const matchLocation = (root, location) => {
     matched = rematched
   }
 
-  const withPath = route.branch.filter(({ path, isRoot }) => path && !isRoot)
-  const matchers = flatMap(withPath, ({ matchers }) => matchers)
-  const allParams = zipWith(matchers, matched, ({ toParam }, segment) =>
-
-    toParam(segment))
-
-  const params = Object.assign({}, ...allParams)
+  const params = createParams(route, matched)
 
   return { route, params, location }
 }
@@ -70,7 +64,7 @@ const matchRoute = ({ children }, segments, found = { matched: [] }) => {
 }
 
 
-const findSplat = ({ parent, matchers }, matched, unmatched) => {
+const matchSplat = ({ parent, matchers }, matched, unmatched) => {
 
   if (!parent) return { splat: null }
 
@@ -86,7 +80,19 @@ const findSplat = ({ parent, matchers }, matched, unmatched) => {
     return { splat, rematched }
   }
 
-  return findSplat(parent, rematched, unmatched)
+  return matchSplat(parent, rematched, unmatched)
+}
+
+
+const createParams = (route, matched) => {
+
+  const withPath = route.branch.filter(({ path, isRoot }) => path && !isRoot)
+  const matchers = flatMap(withPath, ({ matchers }) => matchers)
+  const allParams = zipWith(matchers, matched, ({ toParam }, segment) =>
+    toParam(segment)
+  )
+
+  return Object.assign({}, ...allParams)
 }
 
 
