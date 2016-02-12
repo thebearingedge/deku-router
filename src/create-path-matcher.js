@@ -3,7 +3,7 @@ import createSegmentMatcher from './create-segment-matcher'
 import { compact, zipWith, every } from './utils-collection'
 
 
-export default function createPathMatcher(path = '', paramTypes = {}) {
+export default function createPathMatcher(path, paramTypes = {}) {
 
   const splitPath = path.split('/')
   const isAbsolute = path.startsWith('/')

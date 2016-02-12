@@ -23,11 +23,14 @@ const createRoute = (parent = null) => ({ props, children, component }) => {
 
     const { path, paramTypes } = props
 
-    Object.assign(route, createPathMatcher(path, paramTypes))
+    if (path) {
 
-    if (route.isAbsolute && !route.isRoot) {
+      Object.assign(route, createPathMatcher(path, paramTypes))
 
-      route.root.children.push(route)
+      if (route.isAbsolute && !route.isRoot) {
+
+        route.root.children.push(route)
+      }
     }
 
     route.children = route.children
