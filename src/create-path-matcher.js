@@ -56,21 +56,16 @@ const filterParams = (params, paramKeys) =>
     ({ [param]: params[param], ...own }), {})
 
 
-const createParams = (matchers, unmatched) => {
+const createParams = (matchers, unmatched) =>
 
-  const matched = compact(zipWith(matchers, unmatched, (matcher, segment) =>
+  Object.assign(...compact(zipWith(matchers, unmatched, (matcher, segment) =>
 
     matcher.type === 'splat'
       ? matcher.toParam(unmatched.join('/'))
       : matcher.toParam(segment)
-  ))
-
-  if (matched.length < matchers.length) return null
-
-  return Object.assign(...matched)
-}
+  )))
 
 
 const createPath = (matchers, params) =>
 
-  matchers.map(m => m.toSegment(params)).join('/')
+  matchers.map(m => m.toSegment(params))

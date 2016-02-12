@@ -20,7 +20,7 @@ export const invokeAsync = (fn, ...args) =>
     }
     catch (err) {
 
-      reject(err)
+      return reject(err)
     }
 
     if (result !== undefined || fn.length <= args.length) resolve(result)

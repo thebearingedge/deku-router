@@ -34,17 +34,11 @@ export default function createSegmentMatcher(segment, ParamType = String) {
 }
 
 
-const isMatch = (segment, type, key) => {
+const isMatch = (segment, type, key) =>
 
-  switch (type) {
-    case 'dynamic':
-      return true
-    case 'splat':
-      return true
-    default:
-      return segment === key
-  }
-}
+  type === 'dynamic' ||
+  type === 'splat' ||
+  segment === key
 
 
 const createParam = (segment, type, key, ParamType) => {
@@ -55,7 +49,7 @@ const createParam = (segment, type, key, ParamType) => {
     case 'splat':
       return { [key]: segment }
     default:
-      return key === segment ? {} : null
+      return {}
   }
 }
 

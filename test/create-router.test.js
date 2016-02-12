@@ -148,6 +148,19 @@ describe('createRouter(routes, history, store)', () => {
     Router.transitionTo('/page').catch(done)
   })
 
+  it('throws when no route is found', done => {
+
+    Router
+      .transitionTo('/whargarble')
+      .then(() => done(new Error('/whargarble should not be found')))
+      .catch(err => {
+        expect(err)
+          .to.be.an.instanceOf(Error)
+          .and.have.property('message', 'Route not found for /whargarble')
+        done()
+      })
+  })
+
   it('redirects to another route', done => {
 
     store.subscribe(() => {

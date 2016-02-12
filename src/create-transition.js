@@ -12,6 +12,11 @@ const createTransition = (fromState, location, store, { redirects = [], serving 
     const toState = matchLocation(routes, location)
     const { url } = toState.location
 
+    if (!toState.route) {
+
+      return reject(new Error(`Route not found for ${url}`))
+    }
+
     const transition = fromState.transition = {
       toState,
       redirects,

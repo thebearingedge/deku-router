@@ -45,7 +45,7 @@ export const combine = ({ pathname, query, hash }) => {
 
   if (search) url += '?' + search
 
-  return url + (normalizeHash(hash) || '')
+  return url + normalizeHash(hash)
 }
 
 export const normalizeUrl = url => {

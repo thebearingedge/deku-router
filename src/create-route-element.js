@@ -6,7 +6,6 @@ import { isFunction } from './utils-object'
 const createRouteElement = (route, params = {}, query = {}) => {
 
   const { branch, index } = route
-
   const routes = [...branch]
 
   if (index) routes.push(index)
@@ -18,19 +17,18 @@ const createRouteElement = (route, params = {}, query = {}) => {
   routes.reduce((targets, { getOwnParams, component, components }) => {
 
     const routeParams = isFunction(getOwnParams) ? getOwnParams(params) : {}
-
     const props = { ...routerProps, routeParams }
 
     return components
-      ? mapComponentsToProps(targets, props, components)
-      : nestComponent(targets, props, component)
+      ? mapElementsToProps(targets, props, components)
+      : nestElement(targets, props, component)
   }, [element])
 
   return element
 }
 
 
-const mapComponentsToProps = (targets, props, components) =>
+const mapElementsToProps = (targets, props, components) =>
 
   Object.keys(components).map(key => {
 
@@ -42,7 +40,7 @@ const mapComponentsToProps = (targets, props, components) =>
   })
 
 
-const nestComponent = (targets, props, component) => {
+const nestElement = (targets, props, component) => {
 
   const element = h(component, props)
 

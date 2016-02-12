@@ -10,7 +10,6 @@ describe('createSegmentMatcher(path, type)', () => {
     expect(matcher).to.have.property('specificity', '4')
     expect(matcher.toParam('foo')).to.deep.equal({})
     expect(matcher.toSegment({})).to.equal('foo')
-    expect(matcher.toParam('bar')).to.equal(null)
   })
 
   it('creates a "dynamic" matcher', () => {

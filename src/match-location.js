@@ -2,7 +2,7 @@
 import { extract } from './utils-url'
 import * as utils from './utils-collection'
 
-const { take, takeRight, drop, dropRight, flatMap, zipWith } = utils
+const { tail, take, takeRight, drop, dropRight, flatMap, zipWith } = utils
 
 
 const matchLocation = (root, location) => {
@@ -15,7 +15,7 @@ const matchLocation = (root, location) => {
   }
 
   const notFound = { route: null, params: null, location }
-  const segments = drop(1, location.pathname.split('/'))
+  const segments = tail(location.pathname.split('/'))
 
   let { route, matched } = matchRoute(root, segments)
 
@@ -88,11 +88,10 @@ const createParams = (route, matched) => {
 
   const withPath = route.branch.filter(({ path, isRoot }) => path && !isRoot)
   const matchers = flatMap(withPath, ({ matchers }) => matchers)
-  const allParams = zipWith(matchers, matched, ({ toParam }, segment) =>
-    toParam(segment)
-  )
 
-  return Object.assign({}, ...allParams)
+  return Object.assign(...zipWith(matchers, matched, ({ toParam }, segment) =>
+    toParam(segment)
+  ))
 }
 
 

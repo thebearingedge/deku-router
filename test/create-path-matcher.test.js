@@ -8,8 +8,7 @@ describe('createPathMatcher(path, paramTypes)', () => {
     const matcher = createPathMatcher('foo/:bar')
     expect(matcher).to.have.property('specificity', '43')
     expect(matcher.toParams(['foo', 'baz'])).to.deep.equal({ bar: 'baz' })
-    expect(matcher.toPath({ bar: 'baz' })).to.equal('foo/baz')
-    expect(matcher.toParams(['bar'])).to.equal(null)
+    expect(matcher.toPath({ bar: 'baz' })).to.deep.equal(['foo', 'baz'])
   })
 
   it('matches typed dynamic paths', () => {
@@ -21,8 +20,7 @@ describe('createPathMatcher(path, paramTypes)', () => {
     const matcher = createPathMatcher('foo/bar')
     expect(matcher).to.have.property('specificity', '44')
     expect(matcher.toParams(['foo', 'bar'])).to.deep.equal({})
-    expect(matcher.toPath({})).to.equal('foo/bar')
-    expect(matcher.toParams(['foo', 'baz'])).to.equal(null)
+    expect(matcher.toPath({})).to.deep.equal(['foo', 'bar'])
   })
 
   it('matches splat paths', () => {
