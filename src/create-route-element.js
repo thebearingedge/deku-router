@@ -33,7 +33,7 @@ const mapElementsToProps = (targets, props, components) =>
 
     const element = h(components[key], props)
 
-    targets.forEach(el => el.props[key] = element)
+    targets.forEach(el => { el.props[key] = element })
 
     return element
   })

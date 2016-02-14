@@ -1,6 +1,6 @@
 
 import matchLocation from './match-location'
-import { compact, flatMap, takeRightWhile } from './utils-collection'
+import { compact, flatMap } from './utils-collection'
 import { invokeAsync } from './utils-async'
 
 
@@ -47,15 +47,6 @@ const createTransition = (fromState, location, store, { redirects = [], serving 
     }
 
     const { branch: toBranch } = toState.route
-    const { branch: fromBranch } = fromState.route
-
-    const exiting = takeRightWhile(fromBranch, route =>
-      !toBranch.includes(route)
-    )
-
-    const entering = takeRightWhile(toBranch, route =>
-      !fromBranch.includes(route)
-    )
 
     const stateHooks = compact(flatMap(toBranch, ({ component, components }) =>
       components
