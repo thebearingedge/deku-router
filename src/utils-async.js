@@ -1,7 +1,7 @@
 
-export const mapAsync = (collection, callback) =>
+export const mapAsync = (xs, callback) =>
 
-  Promise.all(collection.map(item => invokeAsync(callback, item)))
+  Promise.all(xs.map(x => invokeAsync(callback, x)))
 
 
 export const invokeAsync = (fn, ...args) =>
