@@ -2,7 +2,7 @@
 import { h } from 'deku'
 
 
-const createRouteElement = (route, params = {}, query = {}) => {
+export default function createRouteElement(route, params = {}, query = {}) {
 
   const { branch, index } = route
   const routes = [...branch]
@@ -13,9 +13,9 @@ const createRouteElement = (route, params = {}, query = {}) => {
   const routerProps = { params, query, routeParams: {} }
   const element = h(component, routerProps)
 
-  routes.reduce((targets, { path, getOwnParams, component, components }) => {
+  routes.reduce((targets, { path, getRouteParams, component, components }) => {
 
-    const routeParams = path ? getOwnParams(params) : {}
+    const routeParams = path ? getRouteParams(params) : {}
     const props = { ...routerProps, routeParams }
 
     return components
@@ -47,6 +47,3 @@ const nestElement = (targets, props, component) => {
 
   return [element]
 }
-
-
-export default createRouteElement

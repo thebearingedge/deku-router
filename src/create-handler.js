@@ -7,13 +7,12 @@ import matchLocation from './match-location'
 import createTransition from './create-transition'
 
 
-const createHandler = root => {
+export default function createHandler(root) {
 
   const routes = createRoute()(root)
   const rootState = { ...matchLocation(routes, '/'), transition: null }
 
-
-  const handler = (location, store, done) => {
+  return (location, store, done) => {
 
     const fromState = Object.assign({}, rootState)
 
@@ -27,16 +26,8 @@ const createHandler = root => {
 
         store.dispatch(batchActions([routeChange(location), ...actions]))
 
-        const Element = createRouteElement(route, params, query)
-
-        done(null, null, Element)
+        done(null, null, createRouteElement(route, params, query))
       })
       .catch(done)
   }
-
-
-  return handler
 }
-
-
-export default createHandler

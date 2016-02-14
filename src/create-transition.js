@@ -1,10 +1,10 @@
 
 import matchLocation from './match-location'
-import { compact, flatMap } from './utils-collection'
+import { compact, flatMap, takeRightWhile } from './utils-collection'
 import { invokeAsync } from './utils-async'
 
 
-const createTransition = (fromState, location, store, { redirects = [], serving = false } = {}) =>
+const createTransition = (fromState, location, store, { redirects = [], serving } = {}) =>
 
   new Promise((resolve, reject) => {
 
@@ -17,12 +17,6 @@ const createTransition = (fromState, location, store, { redirects = [], serving 
       return reject(new Error(`Route not found for ${url}`))
     }
 
-    const transition = fromState.transition = {
-      toState,
-      redirects,
-      get isCancelled() { return fromState.transition !== this }
-    }
-
     if (redirects.includes(url)) {
 
       const loop = redirects.concat(url).join(' -> ')
@@ -30,6 +24,11 @@ const createTransition = (fromState, location, store, { redirects = [], serving 
       return reject(new Error(`redirect loop detected: ${loop}`))
     }
 
+    const transition = fromState.transition = {
+      toState,
+      redirects,
+      get isCancelled() { return fromState.transition !== this }
+    }
 
     const redirectTo = location => {
 
@@ -47,12 +46,18 @@ const createTransition = (fromState, location, store, { redirects = [], serving 
       resolve(createTransition(fromState, location, store, { redirects }))
     }
 
+    const { branch: toBranch } = toState.route
+    const { branch: fromBranch } = fromState.route
 
-    const toBranch = [...toState.route.branch]
+    const exiting = takeRightWhile(fromBranch, route =>
+      !toBranch.includes(route)
+    )
 
+    const entering = takeRightWhile(toBranch, route =>
+      !fromBranch.includes(route)
+    )
 
     const stateHooks = compact(flatMap(toBranch, ({ component, components }) =>
-
       components
         ? Object.keys(components).map(key => components[key].loadState)
         : component.loadState

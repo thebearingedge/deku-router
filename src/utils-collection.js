@@ -32,18 +32,14 @@ export const compact = xs => xs.filter(Boolean)
 export const flatMap = (xs, cb) => [].concat(...xs.map(cb))
 
 
-export const takeWhile = (xs, test = Boolean) =>
+export const takeWhile = (xs, cb = Boolean) =>
 
-  test(head(xs))
-    ? [head(xs), ...takeWhile(tail(xs), test)]
-    : []
+  cb(head(xs)) ? [head(xs), ...takeWhile(tail(xs), cb)] : []
 
 
-export const takeRightWhile = (xs, test = Boolean) =>
+export const takeRightWhile = (xs, cb = Boolean) =>
 
-  test(last(xs))
-    ? [...takeRightWhile(init(xs), test), last(xs)]
-    : []
+  cb(last(xs)) ? [...takeRightWhile(init(xs), cb), last(xs)] : []
 
 
 export const zipWith = (xs, ys, cb) => xs.map((_, i) => cb(xs[i], ys[i]))

@@ -33,9 +33,11 @@ const createRoute = (parent = null) => ({ props, children, component }) => {
       }
     }
 
-    route.children = route.children
-      .concat(children.map(createRoute(route)))
+    const childRoutes = children
+      .map(createRoute(route))
       .filter(child => child !== route.index)
+
+    route.children.push(...childRoutes)
   }
 
   return route

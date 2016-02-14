@@ -5,7 +5,7 @@ import * as utils from './utils-collection'
 const { tail, take, takeRight, drop, dropRight, flatMap, zipWith } = utils
 
 
-const matchLocation = (root, location) => {
+export default function matchLocation(root, location) {
 
   location instanceof Object || (location = extract(location))
 
@@ -48,29 +48,28 @@ const matchRoute = ({ children }, segments, found = { matched: [] }) => {
   if (!route) return found
 
   const unmatched = drop(route.length, segments)
+  const { matched } = found
 
   if (!unmatched.length) {
 
-    return {
-      route,
-      matched: found.matched.concat(segments)
-    }
+    matched.push(...segments)
+
+    return { route, matched }
   }
 
-  return matchRoute(route, unmatched, {
-    route,
-    matched: found.matched.concat(take(route.length, segments))
-  })
+  matched.push(...take(route.length, segments))
+
+  return matchRoute(route, unmatched, { route, matched })
 }
 
 
-const matchSplat = ({ parent, matchers }, matched, unmatched) => {
+const matchSplat = ({ parent, length }, matched, unmatched) => {
 
   if (!parent) return { splat: null }
 
-  unmatched.unshift(...takeRight(matchers.length, matched))
+  unmatched.unshift(...takeRight(length, matched))
 
-  const rematched = dropRight(matchers.length, matched)
+  const rematched = dropRight(length, matched)
   const splat = parent.children.find(route => route.isSplat)
 
   if (splat) {
@@ -84,15 +83,12 @@ const matchSplat = ({ parent, matchers }, matched, unmatched) => {
 }
 
 
-const createParams = (route, matched) => {
+const createParams = ({ branch }, matched) => {
 
-  const withPath = route.branch.filter(({ path, isRoot }) => path && !isRoot)
+  const withPath = branch.filter(({ path, isRoot }) => path && !isRoot)
   const matchers = flatMap(withPath, ({ matchers }) => matchers)
 
   return Object.assign(...zipWith(matchers, matched, ({ toParam }, segment) =>
     toParam(segment)
   ))
 }
-
-
-export default matchLocation

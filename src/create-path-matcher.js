@@ -5,9 +5,10 @@ import { tail, compact, zipWith, every } from './utils-collection'
 
 export default function createPathMatcher(path, paramTypes = {}) {
 
-  const splitPath = path.split('/')
+  const isSplat = path.startsWith('*')
   const isAbsolute = path.startsWith('/')
-  const segments = isAbsolute ? tail(splitPath) : splitPath
+  const segments = (isAbsolute ? tail(path) : path).split('/')
+  const { length } = compact(segments)
 
   const matchers = segments.map(segment => {
 
@@ -18,27 +19,27 @@ export default function createPathMatcher(path, paramTypes = {}) {
     return createSegmentMatcher(segment, ParamType)
   })
 
+  const specificity = matchers.map(m => m.specificity).join('')
+
   const paramKeys = matchers.reduce((keys, { type, key }) =>
     type === 'dynamic' ? keys.concat(key) : keys
   , [])
 
+  const matches = segments => isMatch(matchers, segments)
+
+  const getRouteParams = params => filterParams(params, paramKeys)
+
   return {
-    matches: segments => isMatch(matchers, segments),
-    matchers,
-    length: compact(segments).length,
-    isAbsolute,
-    isSplat: path.startsWith('*'),
-    specificity: matchers.map(m => m.specificity).join(''),
-    getOwnParams: params => filterParams(params, paramKeys)
+    length, isSplat, matchers, isAbsolute, specificity, matches, getRouteParams
   }
 }
+
 
 const isMatch = (matchers, segments) =>
 
   matchers.length <= segments.length &&
 
   every(zipWith(matchers, segments, (matcher, segment) =>
-
     matcher.matches(segment)
   ))
 

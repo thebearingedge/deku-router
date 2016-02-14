@@ -1,15 +1,17 @@
 
+import { tail } from './utils-collection'
+
 export default function createSegmentMatcher(segment, ParamType = String) {
 
   let type, key, specificity
 
   if (segment.startsWith('*')) {
-    key = segment.slice(1)
+    key = tail(segment)
     type = 'splat'
     specificity = '2'
   }
   else if (segment.startsWith(':')) {
-    key = segment.slice(1)
+    key = tail(segment)
     type = 'dynamic'
     specificity = '3'
   }

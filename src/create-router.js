@@ -27,9 +27,9 @@ export default function createRouter(root, history, store) {
   }
 
 
-  const transitionTo = (location, { navigating = false } = {}) => {
+  const transitionTo = (location, { navigating = false } = {}) =>
 
-    return createTransition(state, location, store)
+    createTransition(state, location, store)
       .then(({ toState, redirects, actions }) => {
 
         Object.assign(state, toState, { transition: null })
@@ -47,7 +47,6 @@ export default function createRouter(root, history, store) {
 
         dispatch(batchActions([routeChange(location), ...actions]))
       })
-  }
 
 
   return Object.assign(Router, { state, render, transitionTo })
