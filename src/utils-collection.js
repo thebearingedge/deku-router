@@ -34,12 +34,12 @@ export const flatMap = (xs, cb) => [].concat(...xs.map(cb))
 
 export const takeWhile = (xs, cb = Boolean) =>
 
-  cb(head(xs)) ? [head(xs), ...takeWhile(tail(xs), cb)] : []
+  xs.length && cb(head(xs)) ? [head(xs), ...takeWhile(tail(xs), cb)] : []
 
 
 export const takeRightWhile = (xs, cb = Boolean) =>
 
-  cb(last(xs)) ? [...takeRightWhile(init(xs), cb), last(xs)] : []
+  xs.length && cb(last(xs)) ? [...takeRightWhile(init(xs), cb), last(xs)] : []
 
 
 export const zipWith = (xs, ys, cb) => xs.map((_, i) => cb(xs[i], ys[i]))

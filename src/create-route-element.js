@@ -13,37 +13,37 @@ export default function createRouteElement(route, params = {}, query = {}) {
   const routerProps = { params, query, routeParams: {} }
   const element = h(component, routerProps)
 
-  routes.reduce((targets, { path, getRouteParams, component, components }) => {
+  routes.reduce((elements, { path, getRouteParams, component, components }) => {
 
     const routeParams = path ? getRouteParams(params) : {}
     const props = { ...routerProps, routeParams }
 
     return components
-      ? mapElementsToProps(targets, props, components)
-      : nestElement(targets, props, component)
+      ? mapElementsToProps(elements, props, components)
+      : nestElement(elements, props, component)
   }, [element])
 
   return element
 }
 
 
-const mapElementsToProps = (targets, props, components) =>
+const mapElementsToProps = (elements, props, components) =>
 
   Object.keys(components).map(key => {
 
     const element = h(components[key], props)
 
-    targets.forEach(el => { el.props[key] = element })
+    elements.forEach(el => { el.props[key] = element })
 
     return element
   })
 
 
-const nestElement = (targets, props, component) => {
+const nestElement = (elements, props, component) => {
 
   const element = h(component, props)
 
-  targets.forEach(target => target.children.push(element))
+  elements.forEach(target => target.children.push(element))
 
   return [element]
 }

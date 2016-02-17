@@ -19,7 +19,7 @@ export default function createPathMatcher(path, paramTypes = {}) {
     return createSegmentMatcher(segment, ParamType)
   })
 
-  const specificity = matchers.map(m => m.specificity).join('')
+  const specificity = matchers.reduce((s, m) => s + m.specificity, '')
 
   const paramKeys = matchers.reduce((keys, { type, key }) =>
     type === 'dynamic' ? keys.concat(key) : keys
