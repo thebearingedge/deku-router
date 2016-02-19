@@ -39,7 +39,7 @@
     "karma-coverage": "0.5.3",
     "karma-jsdom-launcher": "3.0.0",
     "karma-mocha": "0.2.2",
-    "karma-mocha-reporter": "1.1.5",
+    "karma-mocha-reporter": "1.1.6",
     "mocha": "2.4.5",
     "mock-location": "0.2.0",
     "redux": "3.3.1",
