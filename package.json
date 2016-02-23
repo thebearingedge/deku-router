@@ -34,7 +34,7 @@
     "global": "4.3.0",
     "karma": "0.13.21",
     "karma-babel-preprocessor": "6.0.1",
-    "karma-browserify": "5.0.1",
+    "karma-browserify": "5.0.2",
     "karma-cli": "0.1.2",
     "karma-coverage": "0.5.3",
     "karma-jsdom-launcher": "3.0.0",
