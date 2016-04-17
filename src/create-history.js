@@ -11,75 +11,59 @@ export default function createHistory(window, { useHash = false } = {}) {
   const subscribers = []
 
 
-  const listener = () => {
+  const broadcast = _ =>
 
-    const location = getLocation()
-
-    subscribers.forEach(hook => hook(location))
-  }
+    subscribers.forEach(subscriber => subscriber(getLocation()))
 
 
-  const watch = () => window.addEventListener(eventType, listener)
+  const watch = _ => window.addEventListener(eventType, broadcast)
 
 
-  const ignore = () => window.removeEventListener(eventType, listener)
+  const ignore = _ => window.removeEventListener(eventType, broadcast)
 
 
-  const listen = hook => {
+  const listen = subscriber => {
 
     subscribers.length || watch()
 
-    const index = subscribers.push(hook) - 1
+    const index = subscribers.push(subscriber) - 1
 
-    return () => {
+    return _ => {
 
-      const hook = subscribers.splice(index, 1)[0]
+      const [ subscriber ] = subscribers.splice(index, 1)
 
       subscribers.length || ignore()
 
-      return hook
+      return subscriber
     }
   }
 
 
   const push = (url, { notify = true } = {}) => {
 
-    if (useHistory) {
+    if (useHistory) history.pushState({}, null, url)
+    else (ignore() || ((location.hash = url) && watch()))
 
-      history.pushState({}, null, url)
-    }
-    else {
-
-      ignore()
-      location.hash = url
-      watch()
-    }
-
-    notify && listener()
+    notify && broadcast()
   }
 
 
   const replace = (url, { notify = true } = {}) => {
 
-    if (useHistory) {
-
-      history.replaceState({}, null, url)
-    }
+    if (useHistory) history.replaceState({}, null, url)
     else {
 
       const { origin, pathname, search } = location
       const href = `${origin}${pathname}${search}#${url}`
 
-      ignore()
-      location.replace(href)
-      watch()
+      ignore() || location.replace(href) || watch()
     }
 
-    notify && listener()
+    notify && broadcast()
   }
 
 
-  const getLocation = () => {
+  const getLocation = _ => {
 
     const { pathname, search, hash } = location
     const url = useHistory ? pathname + search + hash : hash.slice(1) || '/'
