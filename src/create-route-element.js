@@ -27,23 +27,23 @@ export default function createRouteElement(route, params = {}, query = {}) {
 }
 
 
-const mapElementsToProps = (elements, props, components) =>
+const mapElementsToProps = (parents, props, components) =>
 
   Object.keys(components).map(key => {
 
     const element = h(components[key], props)
 
-    elements.forEach(el => { el.props[key] = element })
+    parents.forEach(parent => { parent.props[key] = element })
 
     return element
   })
 
 
-const nestElement = (elements, props, component) => {
+const nestElement = (parents, props, component) => {
 
   const element = h(component, props)
 
-  elements.forEach(target => target.children.push(element))
+  parents.forEach(parent => parent.children.push(element))
 
   return [element]
 }
