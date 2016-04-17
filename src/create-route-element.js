@@ -39,11 +39,9 @@ const mapElementsToProps = (parents, props, components) =>
   })
 
 
-const nestElement = (parents, props, component) => {
+const nestElement = (parents, props, component) => [
 
-  const element = h(component, props)
-
-  parents.forEach(parent => parent.children.push(element))
-
-  return [element]
-}
+  parents.reduce((element, parent) =>
+    parent.children.push(element) && element
+  , h(component, props))
+]
