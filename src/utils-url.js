@@ -1,5 +1,6 @@
 
 import { parse, stringify } from 'query-string'
+import { init, head, last } from './utils-collection'
 
 
 export const extract = url => {
@@ -48,23 +49,17 @@ export const combine = ({ pathname, query, hash }) => {
   return url + normalizeHash(hash)
 }
 
+
 export const normalizeUrl = url => {
 
   if (url === '/') return url
 
-  url = url.startsWith('/')
-    ? url
-    : '/' + url
+  url = head(url) === '/' ? url : `/${url}`
 
-  return url.endsWith('/')
-    ? url.slice(0, url.length - 1)
-    : url
+  return last(url) === '/' ? init(url) : url
 }
+
 
 const normalizeHash = fragment =>
 
-  fragment
-    ? fragment.startsWith('#')
-      ? fragment
-      : '#' + fragment
-        : ''
+  fragment ? head(fragment) === '#' ? fragment : `#${fragment}` : ''

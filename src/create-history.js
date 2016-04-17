@@ -1,5 +1,6 @@
 
 import { extract } from './utils-url'
+import { tail } from './utils-collection'
 
 
 export default function createHistory(window, { useHash = false } = {}) {
@@ -66,7 +67,7 @@ export default function createHistory(window, { useHash = false } = {}) {
   const getLocation = _ => {
 
     const { pathname, search, hash } = location
-    const url = useHistory ? pathname + search + hash : hash.slice(1) || '/'
+    const url = useHistory ? pathname + search + hash : tail(hash) || '/'
 
     return extract(decodeURIComponent(url))
   }
